@@ -20,5 +20,31 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Service\CellAccessor:
+        shared: true
+
+    _instanceof:
+        App\Service\Assets\AssetGenerator:
+            tags: ['app.asset_generator']
+
+    App\Service\MapGenerator:
+        arguments:
+            $assetGenerators: !tagged app.asset_generator
+
+    App\Service\Assets\DeadBodyGenerator:
+        arguments:
+            $chances:
+                0: 50
+                1: 20
+                2: 13
+                3: 5.25
+                4: 4
+                5: 2.5
+                6: 2
+                7: 1.5
+                8: 1
+                9: 0.5
+                10: 0.25
+            $occurrenceChance:
+                min: 0
+                max: 0.5

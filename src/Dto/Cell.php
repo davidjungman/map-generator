@@ -2,32 +2,70 @@
 
 namespace App\Dto;
 
+use App\Dto\Attribute\Attribute;
 use App\Enum\BorderCellType;
 
 class Cell
 {
-    /** @param BorderCellType[] $borderTypes */
+    /** @var string[] */
+    public array $css = [];
+
+    /**
+     * @param BorderCellType[] $borderTypes
+     * @param Attribute[] $attributes
+     */
     public function __construct(
         public readonly int $x,
         public readonly int $y,
         public readonly bool $isBorderCell,
-        public readonly ?array $borderTypes = null
+        public readonly ?array $borderTypes = null,
+        public array $attributes = [],
     ) {
+    }
+
+    public function addAttribute(Attribute $attribute): void
+    {
+        $this->attributes[] = $attribute;
     }
 
     public function render(): string
     {
-        $string = "";
+        $css = $this->renderCss();
+        $value = $this->renderValue();
 
-        $string .= "<td style='";
-        if ($this->isBorderCell === true) {
-            $this->renderWithBorderType($string);
-        }
-
-        return $string . "'></td>";
+        return "<td $css>$value</td>";
     }
 
-    private function renderWithBorderType(string &$string): void
+    private function renderCss(): string
+    {
+        if ($this->isBorderCell === true) {
+            $this->renderWithBorderType();
+        }
+
+        if (\count($this->attributes) > 0) {
+            $this->renderWithAttributes();
+        }
+
+        $css = "style='";
+        foreach($this->css as $style) {
+            $css .= $style;
+        }
+        $css .= "'";
+
+        return $css;
+    }
+
+    private function renderValue(): string
+    {
+        $value = "";
+        foreach($this->attributes as $attribute) {
+            $value .= $attribute->renderValue();
+        }
+
+        return $value;
+    }
+
+    private function renderWithBorderType(): void
     {
         if ($this->borderTypes === null) {
             throw new \Exception('Cell can\'t be borderCell without Border Type');
@@ -36,18 +74,25 @@ class Cell
         foreach($this->borderTypes as $borderType) {
             switch($borderType) {
                 case BorderCellType::LEFT:
-                    $string .= "border-left:1px solid black;";
+                    $this->css[] = "border-left:1px solid black;";
                     break;
                 case BorderCellType::TOP:
-                    $string .= "border-top: 1px solid black;";
+                    $this->css[] = "border-top: 1px solid black;";
                     break;
                 case BorderCellType::BOTTOM:
-                    $string .= "border-bottom: 1px solid black;";
+                    $this->css[] = "border-bottom: 1px solid black;";
                     break;
                 case BorderCellType::RIGHT:
-                    $string .= "border-right: 1px solid black;";
+                    $this->css[] = "border-right: 1px solid black;";
                     break;
             }
+        }
+    }
+
+    private function renderWithAttributes(): void
+    {
+        foreach($this->attributes as $attribute) {
+            $this->css[] = $attribute->renderCss();
         }
     }
 }
