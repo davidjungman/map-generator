@@ -20,12 +20,18 @@ class Cell
         public readonly bool $isBorderCell,
         public readonly ?array $borderTypes = null,
         public array $attributes = [],
+        public bool $occupied = false
     ) {
     }
 
     public function addAttribute(Attribute $attribute): void
     {
         $this->attributes[] = $attribute;
+    }
+
+    public function setOccupied(): void
+    {
+        $this->occupied = true;
     }
 
     public function render(): string

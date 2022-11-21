@@ -41,5 +41,6 @@ class DeadBodyGenerator implements AssetGenerator
         $attribute = new DeadBodyAttribute($lootValue);
 
         $cell->addAttribute($attribute);
+        $cell->setOccupied();
     }
 }

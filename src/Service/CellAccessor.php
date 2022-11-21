@@ -30,4 +30,9 @@ class CellAccessor
 
         return $this->cells[$x][$y];
     }
+
+    public function randomUnused(): Cell
+    {
+
+    }
 }
