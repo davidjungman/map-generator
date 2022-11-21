@@ -58,7 +58,7 @@ class MapGenerator
                 return 0;
             }
 
-            return $assetGeneratorA->getWeight() > $assetGeneratorB ? 1 : -1;
+            return $assetGeneratorA->getWeight() > $assetGeneratorB->getWeight() ? 1 : -1;
         });
 
 
