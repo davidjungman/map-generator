@@ -3,14 +3,14 @@
 namespace App\Service;
 
 use App\Dto\Map;
-use App\Dto\Row;
 use App\Dto\Utils\Coordinates;
 use App\Dto\Utils\MapSetting;
 
 class MapGenerator
 {
     public function __construct(
-        public readonly CellGenerator $cellGenerator
+        private readonly CellGenerator $cellGenerator,
+        private readonly RowGenerator $rowGenerator
     ) {
     }
 
@@ -27,7 +27,7 @@ class MapGenerator
                 $coordinates = new Coordinates($rowIndex, $columnIndex);
                 $cells[] = $this->cellGenerator->generate($coordinates, $mapSetting);
             }
-            $rows[] = new Row($cells);
+            $rows[] = $this->rowGenerator->generate($cells);
         }
 
         return new Map($rows);
