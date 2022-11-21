@@ -3,6 +3,7 @@
 namespace App\Dto;
 
 use App\Dto\Attribute\Attribute;
+use App\Dto\Attribute\AttributeWithValue;
 use App\Enum\BorderCellType;
 
 class Cell
@@ -65,7 +66,9 @@ class Cell
     {
         $value = "";
         foreach($this->attributes as $attribute) {
-            $value .= $attribute->renderValue();
+            if ($attribute instanceof AttributeWithValue) {
+                $value .= $attribute->renderValue();
+            }
         }
 
         return $value;

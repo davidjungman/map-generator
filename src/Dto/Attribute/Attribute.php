@@ -12,5 +12,4 @@ abstract class Attribute
     }
 
     abstract public function renderCss(): string;
-    abstract public function renderValue(): string;
 }
