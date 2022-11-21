@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div style="padding-left:25%;">
+        <table>
+            <tbody>
+                {% for row in map.rows %}
+                    <tr>
+                        {% for cell in row.cells %}
+                            {{ cell.render|raw }}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        td {
+            border: 1px solid #bdc3c7;
+            height: 30px;
+            width: 30px;
+        }
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+    </style>
+{% endblock %}
