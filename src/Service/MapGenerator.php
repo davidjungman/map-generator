@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
-use App\Dto\Cell;
 use App\Dto\Map;
 use App\Dto\Row;
+use App\Dto\Utils\Coordinates;
+use App\Dto\Utils\MapSetting;
 
 class MapGenerator
 {
@@ -15,11 +16,16 @@ class MapGenerator
 
     public function generate(int $rowCount, int $columnCount): Map
     {
+        $rowCount--;
+        $columnCount--;
+        $mapSetting = new MapSetting($rowCount, $columnCount);
+
         $rows = [];
         for ($rowIndex = 0; $rowIndex <= $rowCount; $rowIndex++) {
             $cells = [];
             for($columnIndex = 0; $columnIndex <= $columnCount; $columnIndex++) {
-                $cells[] = $this->cellGenerator->generate($rowIndex, $columnIndex);
+                $coordinates = new Coordinates($rowIndex, $columnIndex);
+                $cells[] = $this->cellGenerator->generate($coordinates, $mapSetting);
             }
             $rows[] = new Row($cells);
         }
