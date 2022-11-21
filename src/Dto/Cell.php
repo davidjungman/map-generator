@@ -30,6 +30,16 @@ class Cell
         $this->attributes[] = $attribute;
     }
 
+    public function hasAttribute(string $attribute): bool
+    {
+        foreach($this->attributes as $existingAttribute) {
+            if ($existingAttribute instanceof $attribute) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function setOccupied(): void
     {
         $this->occupied = true;
