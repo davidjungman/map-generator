@@ -48,3 +48,4 @@ services:
             $occurrenceChance:
                 min: 0
                 max: 0.5
+            $weight: 5

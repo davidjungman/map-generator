@@ -38,11 +38,30 @@ class MapGenerator
 
         $this->cellAccessor->build($map, $mapSetting);
 
-        /** @var AssetGenerator $assetGenerator */
-        foreach($this->assetGenerators as $assetGenerator) {
+        foreach($this->getAssetGenerators() as $assetGenerator) {
             $assetGenerator->generate($mapSetting);
         }
 
         return $map;
+    }
+
+    /** @return AssetGenerator[] */
+    private function getAssetGenerators(): array
+    {
+        $generators = [];
+        foreach($this->assetGenerators as $assetGenerator) {
+            $generators[] = $assetGenerator;
+        }
+
+        usort($generators, function(AssetGenerator $assetGeneratorA, AssetGenerator $assetGeneratorB) {
+            if ($assetGeneratorA->getWeight() === $assetGeneratorB->getWeight()) {
+                return 0;
+            }
+
+            return $assetGeneratorA->getWeight() > $assetGeneratorB ? 1 : -1;
+        });
+
+
+        return $generators;
     }
 }

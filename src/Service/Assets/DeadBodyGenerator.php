@@ -15,7 +15,8 @@ class DeadBodyGenerator implements AssetGenerator
         private readonly OccurrenceCalculator $occurrenceCalculator,
         private readonly ChanceCalculator $chanceCalculator,
         private readonly array $chances,
-        private readonly array $occurrenceChance
+        private readonly array $occurrenceChance,
+        private readonly int $weight
     ) {
     }
 
@@ -26,6 +27,11 @@ class DeadBodyGenerator implements AssetGenerator
         for($occurrence = 0; $occurrence < $occurrences; $occurrence++) {
             $this->createAttribute();
         }
+    }
+
+    public function getWeight(): int
+    {
+        return $this->weight;
     }
 
     private function createAttribute(): void
