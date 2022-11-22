@@ -49,3 +49,11 @@ services:
                 min: 0
                 max: 0.5
             $weight: 5
+
+    App\Service\Assets\HotRockGenerator:
+        arguments:
+            $occurrenceChance:
+                min: 0
+                max: 5
+            $weight: 4
+            $maxPoolSize: 10
