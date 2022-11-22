@@ -10,6 +10,4 @@ abstract class Attribute
         public readonly AttributeType $attributeType
     ) {
     }
-
-    abstract public function renderCss(): string;
 }

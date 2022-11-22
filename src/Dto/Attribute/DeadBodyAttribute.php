@@ -12,12 +12,7 @@ class DeadBodyAttribute extends Attribute implements AttributeWithValue
         parent::__construct(AttributeType::DEAD_BODY);
     }
 
-    public function renderCss(): string
-    {
-        return "background: green;";
-    }
-
-    public function renderValue(): string
+    public function getValue(): string
     {
         return (string) $this->lootValue;
     }

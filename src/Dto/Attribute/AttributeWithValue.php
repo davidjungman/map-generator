@@ -4,5 +4,5 @@ namespace App\Dto\Attribute;
 
 interface AttributeWithValue
 {
-    public function renderValue(): string;
+    public function getValue(): string;
 }

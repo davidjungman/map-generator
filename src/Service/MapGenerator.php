@@ -35,9 +35,7 @@ class MapGenerator
         }
 
         $map = new Map($rows);
-
         $this->cellAccessor->build($map, $mapSetting);
-
         foreach($this->getAssetGenerators() as $assetGenerator) {
             $assetGenerator->generate($mapSetting);
         }

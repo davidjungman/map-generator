@@ -10,9 +10,4 @@ class HotRockAttribute extends Attribute
     ) {
         parent::__construct(AttributeType::HOT_ROCK);
     }
-
-    public function renderCss(): string
-    {
-        return "background: yellow;";
-    }
 }

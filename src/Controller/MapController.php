@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\MapGenerator;
+use App\Service\Render\Renderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,7 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class MapController extends AbstractController
 {
     public function __construct(
-        private readonly MapGenerator $mapGenerator
+        private readonly MapGenerator $mapGenerator,
+        private readonly Renderer $renderer
     ) {
     }
 
@@ -20,7 +22,7 @@ class MapController extends AbstractController
         $map = $this->mapGenerator->generate(32, 40);
 
         return $this->render('index.html.twig', [
-            'map' => $map
+            'html' => $this->renderer->render($map)
         ]);
     }
 }
