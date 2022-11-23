@@ -49,7 +49,6 @@ class BorderElevationGenerator implements AssetGenerator
         $path = $this->directPathCalculator->calculate($startCell, $endCell);
 
         $cells = $path->getCells();
-        unset($cells[6]);
         $path = new DirectPath($cells, $path->direction);
 
         foreach($path->getCells() as $cell) {
