@@ -50,6 +50,14 @@ services:
                 max: 0.5
             $weight: 5
 
+    App\Service\Assets\LavaGenerator:
+        arguments:
+            $occurrenceChance:
+                min: 0
+                max: 1
+            $weight: 4
+            $maxPoolSize: 16
+
     App\Service\Assets\HotRockGenerator:
         arguments:
             $occurrenceChance:

@@ -40,6 +40,11 @@ class AttributeRenderer
                         $styles[] = CssStyle::of(Style::BACKGROUND_COLOR, '#95a5a6');
                         break;
                 }
+                break;
+            case AttributeType::LAVA:
+                $styles[] = CssStyle::of(Style::BACKGROUND_IMAGE, Asset::LAVA->value);
+                $styles[] = CssStyle::of(Style::BACKGROUND_COLOR, '#e06b38');
+                break;
         }
 
         return $styles;

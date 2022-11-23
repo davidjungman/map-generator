@@ -30,15 +30,6 @@ class BorderElevationGenerator implements AssetGenerator
 
     public function generate(MapSetting $mapSetting): void
     {
-        $leftPathData = PathData::fromCells(
-            $this->cellAccessor->get(0, 0),
-            $this->cellAccessor->get($mapSetting->rowCount, 0)
-        );
-        $this->generatePath(
-            pathData: $leftPathData,
-            border: BorderType::LEFT
-        );
-
         $leftRootPath = $this->generatePathSize(0, $mapSetting->rowCount);
         $leftPathData = PathData::fromCells(
             $this->cellAccessor->get($leftRootPath->min, 0),
