@@ -62,3 +62,11 @@ services:
         arguments:
             $weight: 1
             $maxCliffLevel: 4
+
+
+    App\Service\Assets\RockGenerator:
+        arguments:
+            $weight: 2
+            $occurrenceChance:
+                min: 0
+                max: 2

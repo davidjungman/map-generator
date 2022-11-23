@@ -3,38 +3,24 @@
 namespace App\Service\Assets;
 
 use App\Dto\Attribute\DeadBodyAttribute;
-use App\Dto\Utils\MapSetting;
 use App\Service\Calculator\ChanceCalculator;
 use App\Service\Calculator\OccurrenceCalculator;
 use App\Service\CellAccessor;
 
-class DeadBodyGenerator implements AssetGenerator
+class DeadBodyGenerator extends AbstractOccurrenceGenerator implements AssetGenerator
 {
+    /** @param float[] $chances */
     public function __construct(
-        private readonly CellAccessor $cellAccessor,
-        private readonly OccurrenceCalculator $occurrenceCalculator,
-        private readonly ChanceCalculator $chanceCalculator,
-        private readonly array $chances,
-        private readonly array $occurrenceChance,
-        private readonly int $weight
+        protected readonly CellAccessor $cellAccessor,
+        protected readonly OccurrenceCalculator $occurrenceCalculator,
+        protected readonly ChanceCalculator $chanceCalculator,
+        protected readonly array $occurrenceChance,
+        protected readonly int $weight,
+        protected readonly array $chances,
     ) {
     }
 
-    public function generate(MapSetting $mapSetting): void
-    {
-        $occurrences = $this->occurrenceCalculator->calculate($this->occurrenceChance['min'], $this->occurrenceChance['max'], $mapSetting->totalCells());
-
-        for($occurrence = 0; $occurrence < $occurrences; $occurrence++) {
-            $this->createAttribute();
-        }
-    }
-
-    public function getWeight(): int
-    {
-        return $this->weight;
-    }
-
-    private function createAttribute(): void
+    public function createAttribute(): void
     {
         $cell = $this->cellAccessor->randomUnoccupied();
         $lootValue = $this->chanceCalculator->calculate($this->chances);

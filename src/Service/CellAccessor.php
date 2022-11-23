@@ -47,6 +47,21 @@ class CellAccessor
         return $cell;
     }
 
+    public function randomUnoccupiedExceptBorderCells(): Cell
+    {
+        $x = random_int(1, $this->mapSetting->rowCount-1);
+        $y = random_int(1, $this->mapSetting->columnCount-1);
+
+        /** @var Cell $cell */
+        $cell = $this->cells[$x][$y];
+
+        if ($cell->isOccupied() === true) {
+            return $this->randomUnoccupiedExceptBorderCells();
+        }
+
+        return $cell;
+    }
+
     public function get(int $x, int $y): Cell
     {
         if ($x > $this->mapSetting->rowCount) {
