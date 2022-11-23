@@ -144,8 +144,11 @@ class BorderElevationGenerator implements AssetGenerator
 
     private function createAttribute(Cell $cell): void
     {
-        $attribute = new ElevationAttribute(1);
-        $cell->addAttribute($attribute);
+        if (!$cell->isOccupied()) {
+            $attribute = new ElevationAttribute(1);
+            $cell->addAttribute($attribute);
+            $cell->setOccupied();
+        }
     }
 
     public function getWeight(): int

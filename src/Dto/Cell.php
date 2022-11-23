@@ -45,6 +45,11 @@ class Cell
         $this->occupied = true;
     }
 
+    public function isOccupied(): bool
+    {
+        return $this->occupied;
+    }
+
     public function toCoordinates(): Coordinates
     {
         return new Coordinates($this->x, $this->y);

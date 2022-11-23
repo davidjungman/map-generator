@@ -58,7 +58,10 @@ class HotRockGenerator implements AssetGenerator
 
     private function createAttribute(Cell $cell): void
     {
-        $attribute = new HotRockAttribute();
-        $cell->addAttribute($attribute);
+        if(!$cell->isOccupied()) {
+            $attribute = new HotRockAttribute();
+            $cell->addAttribute($attribute);
+            $cell->setOccupied();
+        }
     }
 }

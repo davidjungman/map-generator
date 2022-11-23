@@ -36,7 +36,7 @@ class DeadBodyGenerator implements AssetGenerator
 
     private function createAttribute(): void
     {
-        $cell = $this->cellAccessor->random();
+        $cell = $this->cellAccessor->randomUnoccupied();
         $lootValue = $this->chanceCalculator->calculate($this->chances);
         $attribute = new DeadBodyAttribute($lootValue);
 

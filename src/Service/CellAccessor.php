@@ -40,7 +40,7 @@ class CellAccessor
         /** @var Cell $cell */
         $cell = $this->cells[$x][$y];
 
-        if ($cell->occupied === true) {
+        if ($cell->isOccupied() === true) {
             return $this->randomUnoccupied();
         }
 
