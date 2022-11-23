@@ -74,44 +74,44 @@ class CellAccessor
 
     public function getLeftNeighbor(Cell $cell): ?Cell
     {
-        $leftNeighborX = $cell->x - 1;
+        $leftNeighborY = $cell->y - 1;
 
-        if ($leftNeighborX < 0) {
+        if ($leftNeighborY < 0) {
             return null;
         }
 
-        return $this->get($leftNeighborX, $cell->y);
+        return $this->get($cell->x, $leftNeighborY);
     }
 
     public function getRightNeighbor(Cell $cell): ?Cell
     {
-        $rightNeighborX = $cell->x +1;
+        $rightNeighborY = $cell->y +1;
 
-        if ($rightNeighborX > $this->mapSetting->rowCount) {
+        if ($rightNeighborY > $this->mapSetting->columnCount) {
             return null;
         }
 
-        return $this->get($rightNeighborX, $cell->y);
+        return $this->get($cell->x, $rightNeighborY);
     }
 
     public function getBottomNeighbor(Cell $cell): ?Cell
     {
-        $topNeighborY = $cell->y + 1;
+        $topNeighborX = $cell->x + 1;
 
-        if ($topNeighborY > $this->mapSetting->columnCount) {
+        if ($topNeighborX > $this->mapSetting->rowCount) {
             return null;
         }
 
-        return $this->get($cell->x, $topNeighborY);
+        return $this->get($topNeighborX, $cell->y);
     }
 
     public function getTopNeighbor(Cell $cell): ?Cell{
-        $bottomNeighborY = $cell->y -1;
+        $bottomNeighborX = $cell->x -1;
 
-        if ($bottomNeighborY < 0) {
+        if ($bottomNeighborX < 0) {
             return null;
         }
 
-        return $this->get($cell->x, $bottomNeighborY);
+        return $this->get($bottomNeighborX, $cell->y);
     }
 }

@@ -68,9 +68,55 @@ class PathChunkDetector
         return $savedChunks;
     }
 
+    /** @return PathChunk[] */
     private function detectForHorizontalPath(Path $path): array
     {
-        throw new \Exception('Not implemented.');
+        $cells = $path->getCells();
+
+        usort($cells, CellSorter::sortCellsByYCoordinate());
+
+        return $this->detectForPath($cells, $this->addToChunkForY());
+    }
+
+    private function addToChunkForY(): callable
+    {
+        return function(Cell $cell, int $chunkSize, Cell $nextCell) {
+            if ($cell->y + $chunkSize === $nextCell->y) {
+                return true;
+            }
+            return false;
+        };
+    }
+
+    /**
+     * @param Cell[] $sortedCells
+     * @return PathChunk[]
+     */
+    private function detectForPath(array $sortedCells, callable $addToChunk): array
+    {
+        /** @var PathChunk[] $savedChunks */
+        $savedChunks = [];
+
+        foreach($sortedCells as $cell)
+        {
+            $nextCells = array_slice($sortedCells, 1);
+            $currentChunk = [];
+            $currentChunk[] = $cell;
+
+            foreach($nextCells as $nextCell) {
+                if ($addToChunk($cell, \count($currentChunk), $nextCell)) {
+                    $currentChunk[] = $nextCell;
+                } else {
+                    break;
+                }
+            }
+            if (\count($currentChunk) >= self::MIN_CHUNK_SIZE) {
+                $savedChunks[] = new PathChunk($currentChunk);
+                array_splice($sortedCells, 0, \count($currentChunk));
+            }
+        }
+
+        return $savedChunks;
     }
 
     private function isPathLongerThenMinimumChunkSize(Path $path): bool

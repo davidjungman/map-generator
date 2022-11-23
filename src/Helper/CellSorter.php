@@ -20,4 +20,19 @@ class CellSorter
             return -1;
         };
     }
+
+    public static function sortCellsByYCoordinate(): callable
+    {
+        return function (Cell $cellA, Cell $cellB) {
+            if ($cellA->y === $cellB->y) {
+                return 0;
+            }
+
+            if ($cellA->y > $cellB->y) {
+                return 1;
+            }
+
+            return -1;
+        };
+    }
 }

@@ -19,7 +19,7 @@ class MapController extends AbstractController
     #[Route('/', name: 'map')]
     public function generate(): Response
     {
-        $map = $this->mapGenerator->generate(32, 40);
+        $map = $this->mapGenerator->generate(30, 30);
 
         return $this->render('index.html.twig', [
             'html' => $this->renderer->render($map)
