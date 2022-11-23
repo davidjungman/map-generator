@@ -4,14 +4,13 @@ namespace App\Service\Assets;
 
 use App\Dto\Attribute\ElevationAttribute;
 use App\Dto\Cell;
-use App\Dto\Cliff\CliffSize;
-use App\Dto\Detector\PathChunk;
 use App\Dto\Path\DirectPath;
 use App\Dto\Path\PathData;
 use App\Dto\Path\PathSizeData;
-use App\Dto\Utils\Coordinates;
 use App\Dto\Utils\MapSetting;
 use App\Enum\BorderType;
+use App\Enum\Coordinate;
+use App\Helper\CellSorter;
 use App\Service\Calculator\CliffCalculator;
 use App\Service\Calculator\DirectPathCalculator;
 use App\Service\CellAccessor;
@@ -88,11 +87,14 @@ class BorderElevationGenerator implements AssetGenerator
         $endCell = $this->cellAccessor->get($pathData->end->x, $pathData->end->y);
         $path = $this->directPathCalculator->calculate($startCell, $endCell);
 
-        $cells = $path->getCells();
-        $path = new DirectPath($cells, $path->direction);
+        if ($currentCliffLevel === 1) {
+            $path = $this->splitPathIntoChunks($path);
+        }
 
-        foreach($path->getCells() as $cell) {
-            $this->createAttribute($cell);
+        if (\count($path) > 3 || $currentCliffLevel !== 1) {
+            foreach($path->getCells() as $cell) {
+                $this->createAttribute($cell);
+            }
         }
 
         $chunks = $this->pathChunkDetector->detect($path);
@@ -113,6 +115,31 @@ class BorderElevationGenerator implements AssetGenerator
                 currentCliffLevel: $currentCliffLevel + 1
             );
         }
+    }
+
+    private function splitPathIntoChunks(DirectPath $path): DirectPath
+    {
+        $cells = $path->getCells();
+        $cellCount = \count($cells);
+
+        $holes = random_int($cellCount / 20, $cellCount / 10);
+
+        $currentChunks = 0;
+        while($holes >= $currentChunks) {
+            $index = random_int(0, $cellCount);
+            if (isset($cells[$index])) {
+                unset($cells[$index]);
+                $currentChunks++;
+            }
+        }
+
+        if ($path->direction === Coordinate::X) {
+            usort($cells, CellSorter::sortCellsByXCoordinate());
+        } else {
+            usort($cells, CellSorter::sortCellsByYCoordinate());
+        }
+
+        return new DirectPath($cells, $path->direction);
     }
 
     private function createAttribute(Cell $cell): void
