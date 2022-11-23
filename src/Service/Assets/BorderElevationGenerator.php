@@ -30,6 +30,15 @@ class BorderElevationGenerator implements AssetGenerator
 
     public function generate(MapSetting $mapSetting): void
     {
+        $leftPathData = PathData::fromCells(
+            $this->cellAccessor->get(0, 0),
+            $this->cellAccessor->get($mapSetting->rowCount, 0)
+        );
+        $this->generatePath(
+            pathData: $leftPathData,
+            border: BorderType::LEFT
+        );
+
         $leftRootPath = $this->generatePathSize(0, $mapSetting->rowCount);
         $leftPathData = PathData::fromCells(
             $this->cellAccessor->get($leftRootPath->min, 0),
@@ -115,6 +124,14 @@ class BorderElevationGenerator implements AssetGenerator
                 currentCliffLevel: $currentCliffLevel + 1
             );
         }
+
+        foreach($chunks as $chunk)
+        {
+            $cellsToElevate = $this->cliffCalculator->calculateIncreasedElevation($chunk);
+            foreach($cellsToElevate as $cellToElevate) {
+                $this->increaseElevation($cellToElevate);
+            }
+        }
     }
 
     private function splitPathIntoChunks(DirectPath $path): DirectPath
@@ -148,6 +165,16 @@ class BorderElevationGenerator implements AssetGenerator
             $attribute = new ElevationAttribute(1);
             $cell->addAttribute($attribute);
             $cell->setOccupied();
+        }
+    }
+
+    private function increaseElevation(Cell $cell): void
+    {
+        $attributes = $cell->attributes;
+        foreach($attributes as $attribute) {
+            if ($attribute instanceof ElevationAttribute) {
+                $attribute->increaseElevation(2);
+            }
         }
     }
 

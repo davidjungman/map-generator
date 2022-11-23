@@ -2,6 +2,8 @@
 
 namespace App\Service\Calculator;
 
+use App\Dto\Attribute\DeadBodyAttribute;
+use App\Dto\Attribute\ElevationAttribute;
 use App\Dto\Cell;
 use App\Dto\Cliff\CliffData;
 use App\Dto\Detector\PathChunk;
@@ -35,6 +37,23 @@ class CliffCalculator
         );
     }
 
+    /** @return Cell[] */
+    public function calculateIncreasedElevation(
+        PathChunk $pathChunk,
+    ): array {
+        $cells = $pathChunk->cells;
+
+        $cellsToElevate = [];
+        foreach($cells as $cell) {
+            if (!$this->canBeElevated($cell)) {
+                continue;
+            }
+            $cellsToElevate[] = $cell;
+        }
+
+        return $cellsToElevate;
+    }
+
     private function calculateCliffCell(Cell $firstCell, BorderType $border): Cell
     {
         switch($border) {
@@ -49,5 +68,37 @@ class CliffCalculator
         }
 
         throw new \Exception("invalid borderType");
+    }
+
+    private function canBeElevated(Cell $cell): bool
+    {
+        return $this->hasElevationLowerOrSameOrNullInAllDirections($cell);
+    }
+
+    private function hasElevationLowerOrSameOrNullInAllDirections(Cell $cell, int $currentCellElevation = 1): bool
+    {
+        $neighbors = $this->cellAccessor->getDirectNeighbors($cell);
+        $counter = 0;
+
+        foreach($neighbors as $neighbor) {
+            if ($neighbor === null) {
+                $counter++;
+                continue;
+            }
+
+            foreach($neighbor->attributes as $attribute) {
+                if ($attribute instanceof ElevationAttribute) {
+                    if ($attribute->elevation <= $currentCellElevation+1) {
+                        $counter++;
+                    }
+                }
+            }
+        }
+
+        if ($counter === 4) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Enum\Render;
 enum Asset: string
 {
     case ELEVATION_POSITIVE_ONE = 'elevation/elevation-positive-one.png';
+    case ELEVATION_POSITIVE_TWO = 'elevation/elevation-positive-two.png';
 
     case DEAD_BODY_VARIANT_A = 'deadbody/deadbody-variant-a.png';
     case DEAD_BODY_VARIANT_B = 'deadbody/deadbody-variant-b.png';
