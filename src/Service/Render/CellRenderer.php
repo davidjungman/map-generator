@@ -64,8 +64,10 @@ class CellRenderer
     {
         foreach($cell->attributes as $attribute)
         {
-            $cssStyle = $this->attributeRenderer->render($attribute);
-            $this->renderData->addStyle($cssStyle);
+            $cssStyles = $this->attributeRenderer->render($attribute);
+            foreach($cssStyles as $cssStyle) {
+                $this->renderData->addStyle($cssStyle);
+            }
         }
     }
 }

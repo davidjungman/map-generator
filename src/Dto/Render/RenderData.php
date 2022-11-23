@@ -2,7 +2,7 @@
 
 namespace App\Dto\Render;
 
-class RenderData
+class RenderData implements Renderable
 {
     public function __construct(
         public string $renderString = ""
@@ -14,9 +14,16 @@ class RenderData
         return $this->renderString;
     }
 
-    public function appendChild(RenderData $childElement): self
+    public function appendChild(Renderable $childElement): self
     {
         $this->append($childElement->getRenderString());
+
+        return $this;
+    }
+
+    public function appendImage(ImageRenderData $imageRenderData): self
+    {
+        $this->append($imageRenderData->getRenderString());
 
         return $this;
     }

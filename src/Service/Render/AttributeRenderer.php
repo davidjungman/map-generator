@@ -5,21 +5,38 @@ namespace App\Service\Render;
 use App\Dto\Attribute\Attribute;
 use App\Dto\Render\CssStyle;
 use App\Enum\AttributeType;
+use App\Enum\Render\Asset;
 use App\Enum\Render\Style;
 
 class AttributeRenderer
 {
-    public function render(Attribute $attribute): CssStyle
+    /** @return CssStyle[] */
+    public function render(Attribute $attribute): array
     {
+        $styles = [];
+
         switch($attribute->attributeType){
             case AttributeType::DEAD_BODY:
-                return CssStyle::of(Style::BACKGROUND_COLOR, 'green');
+                $options = Asset::getDeadBody();
+                $styles[] = CssStyle::of(Style::BACKGROUND_IMAGE, $this->random($options)->value);
+                $styles[] = CssStyle::of(Style::BACKGROUND_COLOR, '#1abc9c');
+                break;
             case AttributeType::HOT_ROCK:
-                return CssStyle::of(Style::BACKGROUND_COLOR, 'yellow');
+                $styles[] = CssStyle::of(Style::BACKGROUND_COLOR, '#f1c40f');
+                break;
             case AttributeType::ELEVATION:
-                return CssStyle::of(Style::BACKGROUND_COLOR, 'grey');
+                $styles[] = CssStyle::of(Style::BACKGROUND_IMAGE, Asset::ELEVATION_POSITIVE_ONE->value);
+                $styles[] = CssStyle::of(Style::BACKGROUND_COLOR, '#bdc3c7');
+                break;
         }
 
-        throw new \Exception('Unknown attribute.');
+        return $styles;
+    }
+
+    /** @param Asset[] $options */
+    public function random(array $options): Asset
+    {
+        $key = array_rand($options);
+        return $options[$key];
     }
 }

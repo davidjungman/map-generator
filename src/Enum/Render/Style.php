@@ -9,4 +9,5 @@ enum Style: string
     case BORDER_RIGHT = "border-right";
     case BORDER_TOP = "border-top";
     case BORDER_BOTTOM = "border-bottom";
+    case BACKGROUND_IMAGE = "background-image";
 }
