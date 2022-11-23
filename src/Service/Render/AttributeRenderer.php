@@ -22,7 +22,9 @@ class AttributeRenderer
                 $styles[] = CssStyle::of(Style::BACKGROUND_COLOR, '#1abc9c');
                 break;
             case AttributeType::HOT_ROCK:
+                $options = Asset::getHotRock();
                 $styles[] = CssStyle::of(Style::BACKGROUND_COLOR, '#f1c40f');
+                $styles[] = CssStyle::of(Style::BACKGROUND_IMAGE, $this->random($options)->value);
                 break;
             case AttributeType::ELEVATION:
                 $styles[] = CssStyle::of(Style::BACKGROUND_IMAGE, Asset::ELEVATION_POSITIVE_ONE->value);
