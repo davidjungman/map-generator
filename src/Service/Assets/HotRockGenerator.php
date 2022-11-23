@@ -8,7 +8,7 @@ use App\Dto\Utils\Coordinates;
 use App\Dto\Utils\MapSetting;
 use App\Service\Calculator\OccurrenceCalculator;
 use App\Service\Calculator\PoolCalculator;
-use App\Service\CellAccessor;
+use App\Service\CellAccessor\CellAccessor;
 
 class HotRockGenerator implements AssetGenerator
 {

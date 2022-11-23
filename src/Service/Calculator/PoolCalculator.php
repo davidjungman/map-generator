@@ -4,7 +4,7 @@ namespace App\Service\Calculator;
 
 use App\Dto\Cell;
 use App\Dto\Utils\Coordinates;
-use App\Service\CellAccessor;
+use App\Service\CellAccessor\CellAccessor;
 
 class PoolCalculator
 {

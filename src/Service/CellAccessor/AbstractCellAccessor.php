@@ -1,27 +1,31 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\CellAccessor;
 
 use App\Dto\Cell;
 use App\Dto\Map;
 use App\Dto\Utils\MapSetting;
 
-class CellAccessor
+abstract class AbstractCellAccessor
 {
-    /** @var array<int, array<int, Cell> $cells */
-    private array $cells;
+    protected MapSetting $mapSetting;
 
-    private MapSetting $mapSetting;
+    /** @var Cell[] $cells */
+    protected array $cells;
 
-    public function build(Map $map, MapSetting $mapSetting): void
+    public function build(Map $map, MapSetting $mapSetting):void
     {
         foreach($map->rows as $row) {
             foreach($row->cells as $cell) {
-                $this->cells[$cell->x][$cell->y] = $cell;
+                if ($this->supports($cell)) {
+                    $this->cells[$cell->x][$cell->y] = $cell;
+                }
             }
         }
         $this->mapSetting = $mapSetting;
     }
+
+    protected abstract function supports(Cell $cell): bool;
 
     public function random(): Cell
     {
@@ -31,7 +35,6 @@ class CellAccessor
         return $this->cells[$x][$y];
     }
 
-    // terrible solution
     public function randomUnoccupied(): Cell
     {
         $x = random_int(0, $this->mapSetting->rowCount);

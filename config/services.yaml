@@ -26,10 +26,13 @@ services:
     _instanceof:
         App\Service\Assets\AssetGenerator:
             tags: ['app.asset_generator']
+        App\Service\CellAccessor\CellAccessorInterface:
+            tags: ['app.cell_accessor']
 
     App\Service\MapGenerator:
         arguments:
             $assetGenerators: !tagged app.asset_generator
+            $cellAccessors: !tagged app.cell_accessor
 
     App\Service\Assets\DeadBodyGenerator:
         arguments:

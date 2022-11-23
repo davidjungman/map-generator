@@ -13,7 +13,7 @@ use App\Enum\Coordinate;
 use App\Helper\CellSorter;
 use App\Service\Calculator\CliffCalculator;
 use App\Service\Calculator\DirectPathCalculator;
-use App\Service\CellAccessor;
+use App\Service\CellAccessor\CellAccessor;
 use App\Service\Detector\PathChunkDetector;
 
 class BorderElevationGenerator implements AssetGenerator

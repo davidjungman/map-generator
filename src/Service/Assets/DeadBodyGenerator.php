@@ -5,7 +5,7 @@ namespace App\Service\Assets;
 use App\Dto\Attribute\DeadBodyAttribute;
 use App\Service\Calculator\ChanceCalculator;
 use App\Service\Calculator\OccurrenceCalculator;
-use App\Service\CellAccessor;
+use App\Service\CellAccessor\CellAccessor;
 
 class DeadBodyGenerator extends AbstractOccurrenceGenerator implements AssetGenerator
 {

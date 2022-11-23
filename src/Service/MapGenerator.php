@@ -6,6 +6,7 @@ use App\Dto\Map;
 use App\Dto\Utils\Coordinates;
 use App\Dto\Utils\MapSetting;
 use App\Service\Assets\AssetGenerator;
+use App\Service\CellAccessor\CellAccessorInterface;
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 class MapGenerator
@@ -13,7 +14,7 @@ class MapGenerator
     public function __construct(
         private readonly CellGenerator $cellGenerator,
         private readonly RowGenerator $rowGenerator,
-        private readonly CellAccessor $cellAccessor,
+        private readonly RewindableGenerator $cellAccessors,
         private readonly RewindableGenerator $assetGenerators
     ) {
     }
@@ -35,12 +36,20 @@ class MapGenerator
         }
 
         $map = new Map($rows);
-        $this->cellAccessor->build($map, $mapSetting);
+
         foreach($this->getAssetGenerators() as $assetGenerator) {
+            $this->updateCellAccessors($map, $mapSetting);
             $assetGenerator->generate($mapSetting);
         }
 
         return $map;
+    }
+
+    private function updateCellAccessors(Map $map, MapSetting $mapSetting): void
+    {
+        foreach($this->cellAccessors as $cellAccessor) {
+            $cellAccessor->build($map, $mapSetting);
+        }
     }
 
     /** @return AssetGenerator[] */

@@ -5,7 +5,7 @@ namespace App\Service\Calculator;
 use App\Dto\Cell;
 use App\Dto\Path\DirectPath;
 use App\Enum\Coordinate;
-use App\Service\CellAccessor;
+use App\Service\CellAccessor\CellAccessor;
 
 class DirectPathCalculator
 {

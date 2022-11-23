@@ -2,13 +2,12 @@
 
 namespace App\Service\Calculator;
 
-use App\Dto\Attribute\DeadBodyAttribute;
 use App\Dto\Attribute\ElevationAttribute;
 use App\Dto\Cell;
 use App\Dto\Cliff\CliffData;
 use App\Dto\Detector\PathChunk;
 use App\Enum\BorderType;
-use App\Service\CellAccessor;
+use App\Service\CellAccessor\CellAccessor;
 
 class CliffCalculator
 {

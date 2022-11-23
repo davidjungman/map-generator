@@ -5,7 +5,7 @@ namespace App\Service\Assets;
 use App\Dto\Utils\MapSetting;
 use App\Service\Calculator\ChanceCalculator;
 use App\Service\Calculator\OccurrenceCalculator;
-use App\Service\CellAccessor;
+use App\Service\CellAccessor\CellAccessor;
 
 abstract class AbstractOccurrenceGenerator implements AssetGenerator
 {
