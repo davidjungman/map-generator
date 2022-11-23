@@ -14,6 +14,8 @@ enum Asset: string
     case HOT_ROCK_VARIANT_A = 'hot-rock/hot-rock-variant-a.png';
     case HOT_ROCK_VARIANT_B = 'hot-rock/hot-rock-variant-b.png';
 
+    case LAVA = 'lava/lava.png';
+
     /** @return string[] */
     public static function getDeadBody(): array
     {

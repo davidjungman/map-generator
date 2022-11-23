@@ -54,12 +54,9 @@ services:
         arguments:
             $occurrenceChance:
                 min: 0
-                max: 2
-            $weight: 1
-            $pullSize:
-                min: 4
-                max: 8
-
+                max: 5
+            $weight: 4
+            $maxPoolSize: 16
 
     App\Service\Assets\HotRockGenerator:
         arguments:
