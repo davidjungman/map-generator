@@ -5,6 +5,7 @@ namespace App\Dto;
 use App\Dto\Attribute\Attribute;
 use App\Dto\Attribute\AttributeWithValue;
 use App\Dto\Attribute\ElevationAttribute;
+use App\Dto\Utils\Coordinates;
 use App\Enum\BorderType;
 
 class Cell
@@ -42,5 +43,10 @@ class Cell
     public function setOccupied(): void
     {
         $this->occupied = true;
+    }
+
+    public function toCoordinates(): Coordinates
+    {
+        return new Coordinates($this->x, $this->y);
     }
 }

@@ -7,9 +7,12 @@ use App\Dto\Cell;
 use App\Dto\Cliff\CliffSize;
 use App\Dto\Detector\PathChunk;
 use App\Dto\Path\DirectPath;
+use App\Dto\Path\PathData;
+use App\Dto\Path\PathSizeData;
 use App\Dto\Utils\Coordinates;
 use App\Dto\Utils\MapSetting;
 use App\Enum\BorderType;
+use App\Service\Calculator\CliffCalculator;
 use App\Service\Calculator\DirectPathCalculator;
 use App\Service\CellAccessor;
 use App\Service\Detector\PathChunkDetector;
@@ -20,6 +23,7 @@ class BorderElevationGenerator implements AssetGenerator
         private readonly CellAccessor $cellAccessor,
         private readonly PathChunkDetector $pathChunkDetector,
         private readonly DirectPathCalculator $directPathCalculator,
+        private readonly CliffCalculator $cliffCalculator,
         private readonly int $weight,
         private readonly int $maxCliffLevel
     ) {
@@ -27,47 +31,61 @@ class BorderElevationGenerator implements AssetGenerator
 
     public function generate(MapSetting $mapSetting): void
     {
-        $leftCliff = $this->generateCliffSize(0, $mapSetting->rowCount);
+        $leftRootPath = $this->generatePathSize(0, $mapSetting->rowCount);
+        $leftPathData = PathData::fromCells(
+            $this->cellAccessor->get($leftRootPath->min, 0),
+            $this->cellAccessor->get($leftRootPath->max, 0)
+        );
         $this->generatePath(
-            start: new Coordinates($leftCliff->start, 0),
-            end: new Coordinates($leftCliff->end, 0),
+            pathData: $leftPathData,
             border: BorderType::LEFT
         );
 
-        $rightCliff = $this->generateCliffSize(0, $mapSetting->rowCount);
+        $rightRootPath = $this->generatePathSize(0, $mapSetting->rowCount);
+        $rightPathData = PathData::fromCells(
+            $this->cellAccessor->get($rightRootPath->min, $mapSetting->columnCount),
+            $this->cellAccessor->get($rightRootPath->max, $mapSetting->columnCount),
+        );
         $this->generatePath(
-            start: new Coordinates($rightCliff->start, $mapSetting->columnCount),
-            end: new Coordinates($rightCliff->end, $mapSetting->columnCount),
+            pathData: $rightPathData,
             border: BorderType::RIGHT
         );
 
-        $topCliff = $this->generateCliffSize(0, $mapSetting->columnCount);
+        $topRootPath = $this->generatePathSize(0, $mapSetting->columnCount);
+        $topPathData = PathData::fromCells(
+            $this->cellAccessor->get(0, $topRootPath->min),
+            $this->cellAccessor->get(0, $topRootPath->max)
+        );
         $this->generatePath(
-            start: new Coordinates(0, $topCliff->start),
-            end: new Coordinates(0, $topCliff->end),
+            pathData: $topPathData,
             border: BorderType::TOP
         );
 
-        $bottomCliff = $this->generateCliffSize(0, $mapSetting->columnCount);
+        $bottomRootPath = $this->generatePathSize(0, $mapSetting->columnCount);
+        $bottomPathData = PathData::fromCells(
+            $this->cellAccessor->get($mapSetting->rowCount, $bottomRootPath->min),
+            $this->cellAccessor->get($mapSetting->rowCount, $bottomRootPath->max)
+        );
         $this->generatePath(
-            start: new Coordinates($mapSetting->rowCount, $bottomCliff->start),
-            end: new Coordinates($mapSetting->rowCount, $bottomCliff->end),
+            pathData: $bottomPathData,
             border: BorderType::BOTTOM
         );
     }
 
-    private function generateCliffSize(int $min, int $max): CliffSize
-    {
-        $cliffStart = random_int($min, $max / 2);
-        $cliffEnd = random_int($cliffStart, $max - $cliffStart);
+    private function generatePathSize(
+        int $min,
+        int $max
+    ): PathSizeData {
+        $start = random_int($min, $max / 2);
+        $end = random_int($start, $max - $start);
 
-        return new CliffSize($cliffStart, $cliffEnd);
+        return new PathSizeData($start, $end);
     }
 
-    private function generatePath(Coordinates $start, Coordinates $end, BorderType $border, int $currentCliffLevel = 1): void
+    private function generatePath(PathData $pathData, BorderType $border, int $currentCliffLevel = 1): void
     {
-        $startCell = $this->cellAccessor->get($start->x, $start->y);
-        $endCell = $this->cellAccessor->get($end->x, $end->y);
+        $startCell = $this->cellAccessor->get($pathData->start->x, $pathData->start->y);
+        $endCell = $this->cellAccessor->get($pathData->end->x, $pathData->end->y);
         $path = $this->directPathCalculator->calculate($startCell, $endCell);
 
         $cells = $path->getCells();
@@ -84,46 +102,17 @@ class BorderElevationGenerator implements AssetGenerator
         }
 
         foreach($chunks as $chunk) {
-            $this->generateCliff($chunk, $currentCliffLevel, $border);
+            if ($currentCliffLevel >= $this->maxCliffLevel) {
+                continue;
+            }
+
+            $cliffData = $this->cliffCalculator->calculate($chunk, $border);
+            $this->generatePath(
+                pathData: PathData::fromCells($cliffData->cliffStartCell, $cliffData->cliffEndCell),
+                border: $border,
+                currentCliffLevel: $currentCliffLevel + 1
+            );
         }
-    }
-
-    private function generateCliff(PathChunk $pathChunk, int $currentCliffLevel, BorderType $border): void
-    {
-        if ($currentCliffLevel >= $this->maxCliffLevel) {
-            return;
-        }
-
-        $cells = $pathChunk->cells;
-        $firstCell = $cells[1];
-        $firstCliffCell = $this->calculateCliffCell($firstCell, $border);
-
-        $totalCells = \count($cells);
-        $lastCell = $cells[$totalCells-2];
-        $lastCliffCell = $this->calculateCliffCell($lastCell, $border);
-
-        $this->generatePath(
-            start: new Coordinates($firstCliffCell->x, $firstCliffCell->y),
-            end: new Coordinates($lastCliffCell->x, $lastCliffCell->y),
-            border: $border,
-            currentCliffLevel: $currentCliffLevel + 1
-        );
-    }
-
-    private function calculateCliffCell(Cell $firstCell, BorderType $border): Cell
-    {
-        switch($border) {
-            case BorderType::LEFT:
-                return $this->cellAccessor->getRightNeighbor($firstCell);
-            case BorderType::RIGHT:
-                return $this->cellAccessor->getLeftNeighbor($firstCell);
-            case BorderType::TOP:
-                return $this->cellAccessor->getBottomNeighbor($firstCell);
-            case BorderType::BOTTOM:
-                return $this->cellAccessor->getTopNeighbor($firstCell);
-        }
-
-        throw new \Exception("invalid borderType");
     }
 
     private function createAttribute(Cell $cell): void
