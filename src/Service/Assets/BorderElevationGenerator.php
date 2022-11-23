@@ -91,7 +91,7 @@ class BorderElevationGenerator implements AssetGenerator
             $path = $this->splitPathIntoChunks($path);
         }
 
-        if (\count($path) > 3 || $currentCliffLevel !== 1) {
+        if (\count($path->getCells()) >= 3 || $currentCliffLevel !== 1) {
             foreach($path->getCells() as $cell) {
                 $this->createAttribute($cell);
             }

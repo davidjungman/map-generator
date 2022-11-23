@@ -43,29 +43,7 @@ class PathChunkDetector
 
         usort($cells, CellSorter::sortCellsByXCoordinate());
 
-        /** @var PathChunk[] $savedChunks */
-        $savedChunks = [];
-
-        foreach($cells as $cell)
-        {
-            $nextCells = array_slice($cells, 1);
-            $currentChunk = [];
-            $currentChunk[] = $cell;
-
-            foreach($nextCells as $nextCell) {
-                if ($cell->x + \count($currentChunk) === $nextCell->x) {
-                    $currentChunk[] = $nextCell;
-                } else {
-                    break;
-                }
-            }
-            if (\count($currentChunk) >= self::MIN_CHUNK_SIZE) {
-                $savedChunks[] = new PathChunk($currentChunk);
-                array_splice($cells, 0, \count($currentChunk));
-            }
-        }
-
-        return $savedChunks;
+        return $this->detectForPath($cells, $this->addToChunkForX());
     }
 
     /** @return PathChunk[] */
@@ -88,6 +66,16 @@ class PathChunkDetector
         };
     }
 
+    private function addToChunkForX(): callable
+    {
+        return function(Cell $cell, int $chunkSize, Cell $nextCell) {
+            if ($cell->x + $chunkSize === $nextCell->x) {
+                return true;
+            }
+            return false;
+        };
+    }
+
     /**
      * @param Cell[] $sortedCells
      * @return PathChunk[]
@@ -97,22 +85,28 @@ class PathChunkDetector
         /** @var PathChunk[] $savedChunks */
         $savedChunks = [];
 
+        $cellsToSelectFrom = $sortedCells;
+
         foreach($sortedCells as $cell)
         {
-            $nextCells = array_slice($sortedCells, 1);
+            if (\count($cellsToSelectFrom) === 0){
+                break;
+            }
+
+            array_splice($cellsToSelectFrom, 0, 1);
             $currentChunk = [];
             $currentChunk[] = $cell;
 
-            foreach($nextCells as $nextCell) {
+            foreach($cellsToSelectFrom as $nextCell) {
                 if ($addToChunk($cell, \count($currentChunk), $nextCell)) {
                     $currentChunk[] = $nextCell;
                 } else {
                     break;
                 }
             }
+
             if (\count($currentChunk) >= self::MIN_CHUNK_SIZE) {
                 $savedChunks[] = new PathChunk($currentChunk);
-                array_splice($sortedCells, 0, \count($currentChunk));
             }
         }
 
