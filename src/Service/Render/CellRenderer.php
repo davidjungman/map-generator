@@ -5,7 +5,7 @@ namespace App\Service\Render;
 use App\Dto\Cell;
 use App\Dto\Render\CssStyle;
 use App\Dto\Render\ElementData;
-use App\Enum\BorderCellType;
+use App\Enum\BorderType;
 use App\Enum\Render\Style;
 
 class CellRenderer
@@ -44,16 +44,16 @@ class CellRenderer
 
         foreach($cell->borderTypes as $borderType) {
             switch($borderType) {
-                case BorderCellType::LEFT:
+                case BorderType::LEFT:
                     $this->renderData->addStyle(CssStyle::of(Style::BORDER_LEFT, "1px solid black"));
                     break;
-                case BorderCellType::TOP:
+                case BorderType::TOP:
                     $this->renderData->addStyle(CssStyle::of(Style::BORDER_TOP, "1px solid black"));
                     break;
-                case BorderCellType::BOTTOM:
+                case BorderType::BOTTOM:
                     $this->renderData->addStyle(CssStyle::of(Style::BORDER_BOTTOM, "1px solid black"));
                     break;
-                case BorderCellType::RIGHT:
+                case BorderType::RIGHT:
                     $this->renderData->addStyle(CssStyle::of(Style::BORDER_RIGHT, "1px solid black"));
                     break;
             }

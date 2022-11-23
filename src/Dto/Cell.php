@@ -4,12 +4,13 @@ namespace App\Dto;
 
 use App\Dto\Attribute\Attribute;
 use App\Dto\Attribute\AttributeWithValue;
-use App\Enum\BorderCellType;
+use App\Dto\Attribute\ElevationAttribute;
+use App\Enum\BorderType;
 
 class Cell
 {
     /**
-     * @param BorderCellType[] $borderTypes
+     * @param BorderType[] $borderTypes
      * @param Attribute[] $attributes
      */
     public function __construct(
@@ -19,7 +20,7 @@ class Cell
         public readonly ?array $borderTypes = null,
         public array $attributes = [],
         public ?AttributeWithValue $valueAttribute = null,
-        public bool $occupied = false
+        public bool $occupied = false,
     ) {
     }
 

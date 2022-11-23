@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum BorderCellType: int
+enum BorderType: int
 {
     case LEFT = 0;
     case RIGHT = 1;

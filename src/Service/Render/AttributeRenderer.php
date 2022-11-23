@@ -16,6 +16,8 @@ class AttributeRenderer
                 return CssStyle::of(Style::BACKGROUND_COLOR, 'green');
             case AttributeType::HOT_ROCK:
                 return CssStyle::of(Style::BACKGROUND_COLOR, 'yellow');
+            case AttributeType::ELEVATION:
+                return CssStyle::of(Style::BACKGROUND_COLOR, 'grey');
         }
 
         throw new \Exception('Unknown attribute.');

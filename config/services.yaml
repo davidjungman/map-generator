@@ -57,3 +57,8 @@ services:
                 max: 5
             $weight: 4
             $maxPoolSize: 10
+
+    App\Service\Assets\BorderElevationGenerator:
+        arguments:
+            $weight: 1
+            $maxCliffLevel: 4

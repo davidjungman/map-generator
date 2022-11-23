@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Dto\Cell;
 use App\Dto\Utils\Coordinates;
 use App\Dto\Utils\MapSetting;
-use App\Enum\BorderCellType;
+use App\Enum\BorderType;
 
 class CellGenerator
 {
@@ -40,21 +40,21 @@ class CellGenerator
         return false;
     }
 
-    /** @return BorderCellType[] */
+    /** @return BorderType[] */
     private function detectBorderType(Coordinates $coordinates, MapSetting $mapSetting): array
     {
         $borderType = [];
         if ($coordinates->x === 0) {
-            $borderType[] = BorderCellType::TOP;
+            $borderType[] = BorderType::TOP;
         }
         if ($coordinates->x === $mapSetting->rowCount) {
-            $borderType[] = BorderCellType::BOTTOM;
+            $borderType[] = BorderType::BOTTOM;
         }
         if ($coordinates->y === 0) {
-            $borderType[] = BorderCellType::LEFT;
+            $borderType[] = BorderType::LEFT;
         }
         if ($coordinates->y === $mapSetting->columnCount) {
-            $borderType[] = BorderCellType::RIGHT;
+            $borderType[] = BorderType::RIGHT;
         }
 
         return $borderType;
