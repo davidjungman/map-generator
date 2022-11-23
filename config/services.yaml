@@ -54,7 +54,7 @@ services:
         arguments:
             $occurrenceChance:
                 min: 0
-                max: 5
+                max: 1
             $weight: 4
             $maxPoolSize: 16
 
